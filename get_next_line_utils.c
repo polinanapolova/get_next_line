@@ -1,83 +1,60 @@
 #include "get_next_line.h"
 
-void	ft_free(char **line)
-{
-	if (line)
-	{
-		free(*line);
-		*line = NULL;
-	}
-}
-
-size_t	ft_strlen(const char *str)
+size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
 	i = 0;
-	while (str[i])
+	while (*(s + i))
 		i++;
 	return (i);
 }
 
-char	*ft_substr(const char *s, unsigned int start, size_t len)
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	char			*r;
-	size_t			i;
-	unsigned int	s_len;
+	while (n--)
+		*((unsigned char *)dst + n) = *((unsigned char *)src + n);
+	return (dst);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*s;
+
+	if (!s1 || !s2)
+		return (NULL);
+	s = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (!s)
+		return (NULL);
+	ft_memcpy(s, s1, ft_strlen(s1));
+	ft_memcpy(s + ft_strlen(s1), s2, ft_strlen(s2) + 1);
+	return ((char *)s);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*str;
 
 	if (!s)
 		return (NULL);
-	i = 0;
-	s_len = (unsigned int)ft_strlen(s);
-	if (s_len < start)
-		len = 0;
-	else if (s_len < start + len)
-		len = s_len - start;
-	if (!(r = (char *)malloc(sizeof(char) * (len + 1))))
+	if (len > (ft_strlen(s) - start))
+		len = ft_strlen(s) - start;
+	str = (char *)malloc((len + 1) * sizeof(char));
+	if (!str)
 		return (NULL);
-	while (i < len)
-		r[i++] = s[start++];
-	r[i] = '\0';
-	return (r);
+	*(str + len) = '\0';
+	if (ft_strlen(s) > start)
+		ft_memcpy(str, s + start, len);
+	return ((char *)str);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strdup(const char *s1)
 {
-	char	*r;
-	int		l;
-	int		i;
+	char	*s2;
 
-	i = 0;
-	if (!s1 || !s2)
+	s2 = (char *)malloc((ft_strlen(s1) + 1) * sizeof(char));
+	if (!s2)
 		return (NULL);
-	if (!s1)
-		return (s2);
-	l = (int)ft_strlen(s1) + (int)ft_strlen(s2);
-	if (!(r = (char *)malloc(sizeof(char) * (l + 1))))
-		return (NULL);
-	while (*s1)
-		r[i++] = *s1++;
-	while (*s2)
-		r[i++] = *s2++;
-	r[i] = '\0';
-	return (r);
-}
-
-char	*ft_strdup(const char *src)
-{
-	int		i;
-	int		len;
-	char	*dup;
-
-	i = 0;
-	len = ft_strlen(src);
-	if (!(dup = (char *)malloc(sizeof(*src) * (len + 1))))
-		return (NULL);
-	while (src[i])
-	{
-		dup[i] = src[i];
-		i++;
-	}
-	dup[i] = '\0';
-	return (dup);
+	*(s2 + ft_strlen(s1)) = '\0';
+	return ((char *)(ft_memcpy(s2, s1, ft_strlen(s1))));
 }
